@@ -1,5 +1,14 @@
 "use strict";
 
+const SONIX_API_BASE = (window.SONIX_API_BASE || location.origin).replace(/\/$/, "");
+const SONIX_BASE_PATH = (window.SONIX_BASE_PATH || "").replace(/\/$/, "");
+function sonixResourceUrl(value) {
+  if (typeof value !== "string" || !value.startsWith("/")) return value;
+  if (value.startsWith("/media/")) return SONIX_API_BASE + value;
+  if (value.startsWith("/assets/")) return SONIX_BASE_PATH + value;
+  return value;
+}
+
 const icons = {
   plus: "M12 5v14M5 12h14", hash: "M10 3 8 21M16 3l-2 18M4 9h16M3 15h16",
   zap: "M13 2 4 14h7l-1 8 10-12h-7z", chevron: "m6 9 6 6 6-6",
@@ -132,7 +141,8 @@ async function api(action, data) {
   const options = data ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data)} : {};
   const messages = !data && action.startsWith("messages?");
   if (messages && messageEtags.has(action)) options.headers = {"If-None-Match":messageEtags.get(action)};
-  const response = await fetch("/api/" + action, options);
+  options.credentials = "include";
+  const response = await fetch(SONIX_API_BASE + "/api/" + action, options);
   if (response.status === 304) return null;
   const result = await response.json();
   if (messages && response.ok && response.headers.has("ETag")) messageEtags.set(action,response.headers.get("ETag"));
@@ -185,7 +195,7 @@ function avatar(node, name, src, color) {
   }
   const img = element("img");
   img.alt = "";
-  img.src = src;
+  img.src = sonixResourceUrl(src);
   node.append(img);
 }
 function notice(text) {
@@ -260,7 +270,7 @@ function renderWorkspace() {
   const selected = selectedChannel();
   $("header-channel").textContent = selected?.name || "Channels";
   $("topic").textContent = (isCommunity ? topics[channel] : active.description) || (selected ? channelTypes[selected.type] : "");
-  $("hero").style.backgroundImage = active.banner ? 'url("' + active.banner + '")' : isCommunity ? "" : "linear-gradient(110deg,#371923,#1c1726)";
+  $("hero").style.backgroundImage = active.banner ? 'url("' + sonixResourceUrl(active.banner) + '")' : isCommunity ? "" : "linear-gradient(110deg,#371923,#1c1726)";
   $("hero").style.backgroundPosition = active.banner ? active.banner_source ? "center" : bannerStyle(active.banner_position, active.banner_horizontal) : "";
   $("hero").hidden = !selected || selected.type !== "text" || channel !== channels.find(item => item.type === "text")?.id;
   $("chat-heading").hidden = selected?.type !== "text";
@@ -366,7 +376,7 @@ function renderMessages(container, items) {
       const emoji = currentEmojis.find(item => ":" + item.name + ":" === part);
       if (emoji) {
         const image = element("img", "inline-emoji");
-        image.src = emoji.image;
+        image.src = sonixResourceUrl(emoji.image);
         image.alt = part;
         body.append(image);
       } else body.append(part);
@@ -1044,7 +1054,7 @@ async function connectVoice(room) {
     return;
   }
   leaveVoice();
-  const endpoint = new URL("/voice", location.href);
+  const endpoint = new URL("/voice", SONIX_API_BASE);
   endpoint.protocol = location.protocol === "https:" ? "wss:" : "ws:";
   endpoint.search = new URLSearchParams({space:room.space,channel:room.channel});
   let session;
@@ -1182,7 +1192,7 @@ function refreshAccountUI() {
 function accountPanelContent(panel) {
   const banner = element("div", "profile-menu-banner");
   if (me.banner) {
-    banner.style.backgroundImage = 'url("' + me.banner + '")';
+    banner.style.backgroundImage = 'url("' + sonixResourceUrl(me.banner) + '")';
     banner.style.backgroundPosition = me.banner_source ? "center" : bannerStyle(me.banner_position, me.banner_horizontal);
   }
   banner.setAttribute("aria-label", "Your profile banner");
@@ -1252,7 +1262,7 @@ async function showMemberProfile(accountId) {
   const body = $("modal-body");
   const banner = element("div", "member-profile-banner");
   if (person.banner) {
-    banner.style.backgroundImage = 'url("' + person.banner + '")';
+    banner.style.backgroundImage = 'url("' + sonixResourceUrl(person.banner) + '")';
     banner.style.backgroundPosition = person.banner_source ? "center" : bannerStyle(person.banner_position, person.banner_horizontal);
   }
   const identity = element("div", "member-profile-identity");
@@ -1513,7 +1523,7 @@ function renderDesktopTabs() {
     const button = element("button", "desktop-tab");
     if (space.icon) {
       const image = element("img","tab-server-logo");
-      image.src = space.icon;
+      image.src = sonixResourceUrl(space.icon);
       image.alt = "";
       button.append(image);
     }
@@ -1615,7 +1625,7 @@ function communityCard(space) {
   const cover = element("div", "community-cover");
   if (isOfficial(space)) cover.classList.add("official-cover");
   if (space.banner) {
-    cover.style.backgroundImage = 'url("' + space.banner + '")';
+    cover.style.backgroundImage = 'url("' + sonixResourceUrl(space.banner) + '")';
     cover.style.backgroundPosition = space.banner_source ? "center" : bannerStyle(space.banner_position, space.banner_horizontal);
   }
   const button = element("button", "button secondary", "Open server");
@@ -1879,7 +1889,7 @@ async function serverSettings(section) {
     page.append(element("p", "", "Invite links are free and expire after seven days."));
     page.append(button("Create invite link", () => submit("invite")));
     for (const invite of data.invites || []) {
-      const link = new URL(location.origin);
+      const link = new URL((SONIX_BASE_PATH || "") + "/", location.origin);
       link.searchParams.set("invite", invite.code);
       const input = element("input", "invite-link");
       input.value = link.href;
@@ -1924,7 +1934,7 @@ async function serverSettings(section) {
     for (const item of data.emojis) {
       const image = element("img", "inline-emoji");
       image.alt = item.name;
-      image.src = item.image;
+      image.src = sonixResourceUrl(item.image);
       row(":" + item.name + ":", image, button("Remove", () => submit("remove-emoji",{name:item.name})));
     }
   } else if (section === "Roles") {
@@ -2204,7 +2214,7 @@ const actions = {
     for (const item of currentEmojis) {
       const button = element("button", "button secondary");
       const image = element("img", "inline-emoji");
-      image.src = item.image;
+      image.src = sonixResourceUrl(item.image);
       image.alt = item.name;
       button.append(image);
       button.onclick = () => {
@@ -2291,4 +2301,4 @@ async function pollChat() {
   setTimeout(pollChat,2500);
 }
 setTimeout(pollChat,2500);
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(SONIX_BASE_PATH + "/sw.js").catch(() => {});

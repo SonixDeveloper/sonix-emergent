@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.cloudflare.com/wrangler/config-schema.json",
+  "name": "sonix-github-api",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-11-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sonix-community-db",
+      "database_id": "2b50b9cb-9368-4682-84c4-460461e03af8",
+      "migrations_dir": "./migrations"
+    }
+  ]
+}
