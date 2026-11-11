@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101014"><meta name="description" content="Sonix is a community chat workspace.">
+<title>Sonix — Community Chat</title>
+<link rel="icon" href="/assets/sonix.svg"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/assets/manifest.webmanifest">
+<link rel="stylesheet" href="/assets/fonts.css">
+<link rel="stylesheet" href="/assets/style.css?v=24"><script src="/assets/config.js"></script><script src="/assets/voice.js?v=24" defer></script><script src="/assets/app.js?v=24" defer></script>
+</head>
+<body>
+<main id="auth-screen" class="auth-screen">
+  <div class="auth-art"><img src="/assets/sonix.svg" alt=""><span class="wordmark">SONIX<span>.</span></span></div>
+  <section class="auth-card" aria-labelledby="auth-title">
+    <h1 id="auth-title">Join Sonix</h1>
+    <div id="auth-form"><p>Checking your session…</p></div>
+    <p id="auth-error" role="alert"></p>
+  </section>
+</main>
+<div class="layout" hidden>
+  <nav class="desktop-tabs" aria-label="Workspace tabs">
+    <button class="desktop-brand" data-action="home" aria-label="Sonix home"><img src="/assets/sonix.svg" alt=""></button>
+    <div id="workspace-tabs"></div>
+    <button class="icon-button" data-action="newtab" title="Add workspace tab" data-icon="plus"></button>
+    <button class="icon-button desktop-discover" data-action="discover" title="Discovery" data-icon="compass"></button>
+    <button class="icon-button" data-action="friends" title="Friends and group chats" data-icon="people"></button>
+    <button class="icon-button profile-trigger desktop-profile" data-action="profile" title="My profile" data-icon="user"></button>
+  </nav>
+  <nav class="rail" aria-label="Servers">
+    <button class="brand-icon" data-action="home" aria-label="Sonix home"><img src="/assets/sonix.svg" alt=""></button>
+    <div class="rail-rule"></div>
+    <div id="server-list" class="servers"></div>
+    <button class="rail-icon" data-action="create" title="Create a server" data-icon="plus"></button>
+    <button class="rail-icon" data-action="join" title="Join by invite" data-icon="link"></button>
+    <button class="rail-icon" data-action="discover" title="Discovery" data-icon="compass"></button>
+    <div class="rail-bottom"><button class="rail-icon ring" data-action="boost" title="Sonix Rings" data-icon="ring"></button></div>
+  </nav>
+  <aside class="sidebar" aria-label="Channels">
+    <div class="wordmark">SONIX<span>.</span></div>
+    <div class="space-top">
+      <div id="space-symbol" class="space-symbol" data-icon="zap"></div>
+      <div class="space-heading"><strong id="space-name">Sonix Official Server</strong><small id="space-type">Community server</small></div>
+      <button class="icon-button space-rings" data-action="boost" title="Sonix Rings" aria-label="Sonix Rings" data-icon="ring"></button>
+      <button class="icon-button space-menu" data-action="server" title="Server settings" aria-label="Server settings" data-icon="chevron"></button>
+      <div class="server-level" id="server-level" title="Server chat activity: every 25 messages advances one level">
+        <div class="server-level-label"><strong id="server-level-name">LEVEL 0</strong><small id="server-level-progress">0 / 25 messages</small></div>
+        <div class="server-level-track" id="server-level-track" role="progressbar" aria-label="Server level progress" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><i id="server-level-fill"></i></div>
+      </div>
+    </div>
+    <div class="channel-scroll">
+      <button class="channel" data-action="home"><span data-icon="zap"></span>Home</button>
+      <button class="channel" data-action="discover"><span data-icon="compass"></span>Discovery</button>
+      <div class="section-title"><span >Channels</span><button class="icon-button" data-action="channels" title="Manage channels" data-icon="plus"></button></div>
+      <div id="channels"></div>
+      <div class="section-title tools-title"><span data-t="tools">Server tools</span></div>
+      <button class="channel" data-action="apps"><span data-icon="grid"></span><span data-t="apps">App Directory</span></button>
+      <button class="channel" data-action="import"><span data-icon="upload"></span><span data-t="import">Import from Discord</span></button>
+    </div>
+    <div class="account"><div class="avatar guest-avatar" id="account-avatar" data-icon="user"></div><div class="account-name"><strong id="account-name">Guest</strong><small id="account-status">Browsing Sonix</small></div><button class="icon-button" data-action="profile" title="Profile and settings" data-icon="settings"></button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button class="icon-button mobile-nav" data-action="nav" title="Toggle channels" data-icon="menu"></button><span class="header-hash" data-icon="hash"></span><strong id="header-channel">general</strong><span class="header-divider"></span><span class="topic" id="topic">The main hangout for everything Sonix.</span><div class="top-actions"><button class="icon-button" data-action="search" title="Search channel" data-icon="search"></button><button class="icon-button" data-action="details" title="Toggle server details" data-icon="panel"></button><button class="button primary small" id="auth-button" data-action="login"><span data-icon="login"></span><span data-t="login">Sign in</span></button></div></header>
+    <section id="hub" class="hub" hidden aria-label="Sonix dashboard"></section>
+    <div class="workspace" hidden>
+      <section class="chat" aria-label="Chat">
+        <div class="chat-scroll" id="chat-scroll">
+          <div class="hero" id="hero"><div class="hero-content"><div class="hero-kicker"><i></i><span id="hero-kicker">SONIX COMMUNITY</span></div><h1 id="hero-title">Sonix Official Server</h1><p id="hero-description">Your hub for games, builds, and late-night conversations.</p></div></div>
+          <div id="chat-heading"><div class="date-rule"><span>COMMUNITY CHAT</span></div></div>
+          <div id="messages" class="messages" role="log" aria-label="Messages"></div>
+        </div>
+        <div class="compose-wrap">
+          <form id="composer" class="composer"><button type="button" class="icon-button composer-plus" data-action="apps" title="Apps and commands" data-icon="plus"></button><input id="draft" placeholder="Message #general" maxlength="2000" autocomplete="off" aria-label="Message"><button type="button" class="icon-button" data-action="emoji" title="Add emoji" data-icon="smile"></button><button class="send" type="submit" aria-label="Send message" data-icon="send"></button></form>
+        </div>
+      </section>
+      <aside class="details" aria-label="Server details">
+        <div class="details-heading"><span data-t="details">Server details</span><button class="icon-button" data-action="server" title="Server settings" data-icon="settings"></button></div>
+        <div class="server-card"><div class="card-emblem" data-icon="zap"></div><strong id="card-name">Sonix Official Server</strong><p id="card-description">A home for creators, gamers, and everyone in between.</p><button class="button secondary full" data-action="invite"><span data-icon="link"></span><span data-t="invite">Invite people</span></button></div>
+        <div class="detail-label server-members-heading"><span id="server-members-title">Ranks &amp; members</span><span id="server-member-count"></span></div>
+        <div id="server-members" class="server-members" aria-live="polite"></div>
+      </aside>
+    </div>
+  </main>
+  <section id="call-media" class="call-media" aria-label="Call video" hidden>
+    <div class="call-media-head"><strong id="call-media-title">Call video</strong><button class="icon-button" id="hide-call-media" title="Hide call video" data-icon="close"></button></div>
+    <p id="call-media-empty">Camera and shared screens appear here.</p>
+    <div id="call-videos" class="voice-videos"></div>
+  </section>
+  <section id="call-dock" class="call-dock" aria-label="Voice call" hidden>
+    <div id="call-avatar" class="avatar"></div>
+    <strong id="call-user"></strong>
+    <button id="call-room" class="call-room" title="Go to voice channel">
+      <span id="call-status" role="status"></span>
+      <span class="call-room-name"><span data-icon="sound"></span><span id="call-channel"></span></span>
+    </button>
+    <div class="call-actions">
+      <button id="call-share" class="icon-button" title="Share screen"><span data-icon="screen"></span><span class="call-action-label">Share screen</span></button>
+      <button id="call-camera" class="icon-button" title="Turn on camera"><span data-icon="camera"></span><span class="call-action-label">Camera</span></button>
+      <button id="call-video" class="icon-button" title="Show call video" data-icon="panel"></button>
+      <button id="call-mic" class="icon-button" title="Mute microphone" data-icon="mic"></button>
+      <button id="call-deafen" class="icon-button" title="Deafen" data-icon="headphones"></button>
+      <button id="call-disconnect" class="button disconnect" title="Disconnect"><span data-icon="phone"></span><span>Disconnect</span></button>
+    </div>
+  </section>
+</div>
+<dialog id="modal" aria-labelledby="modal-title"><div class="modal-head"><h2 id="modal-title"></h2><button class="icon-button" data-action="close" title="Close" data-icon="close"></button></div><div id="modal-body"></div><p id="modal-error" role="alert"></p></dialog>
+<dialog id="banner-editor" aria-labelledby="banner-editor-title"></dialog>
+<div id="toast" role="status"></div>
+</body>
+</html>
