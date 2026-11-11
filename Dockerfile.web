@@ -1,0 +1,25 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PORT=8080 \
+    SONIX_WEB_DATABASE=/data/sonix-web.db
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY sonix ./sonix
+RUN pip install --no-cache-dir . \
+    && useradd --uid 10001 --create-home --shell /usr/sbin/nologin sonix \
+    && mkdir -p /data \
+    && chown sonix:sonix /data
+
+COPY packaging/container/web-entrypoint.sh /usr/local/bin/sonix-web-entrypoint
+RUN chmod 755 /usr/local/bin/sonix-web-entrypoint
+
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c 'import os,urllib.request; urllib.request.urlopen("http://127.0.0.1:"+os.getenv("PORT","8080")+"/healthz",timeout=3)' || exit 1
+
+ENTRYPOINT ["/usr/local/bin/sonix-web-entrypoint"]

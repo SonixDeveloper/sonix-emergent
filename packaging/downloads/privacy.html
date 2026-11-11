@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sonix privacy</title>
+<style>body{color-scheme:dark;background:#100d12;color:#f6eef3;font:16px/1.65 system-ui,sans-serif;margin:0}main{max-width:760px;padding:28px 20px;margin:auto}a{color:#ff9dab}h1{line-height:1.2}h2{font-size:20px;margin-top:26px}p,li{color:#cec1ca}</style></head>
+<body><main><a href="./">Back to Sonix</a><h1>Privacy in Sonix</h1>
+<p>Updated 11 November 2026. This page describes the Sonix preview hosted by SonixDeveloper.</p>
+<h2>Account and chat data</h2>
+<p>Sonix stores your account email, an Argon2id password hash, profile details, memberships, friend requests, messages, polls and votes. Server settings also store uploaded emoji, bot commands, invites, roles, bans and action logs. Public server messages are visible to visitors. Private messages and group channels are available to their members. The server operator can access the database. Messages are stored without end-to-end encryption.</p>
+<h2>Authenticator and QR sign-in</h2><p>The Sonix server app supports Google Authenticator-compatible two-factor codes and two-minute QR sign-in approvals. Those features need the account server. The current public preview keeps profiles in the browser and does not provide cross-device QR sign-in or authenticator-backed online accounts.</p>
+<h2>Device and call permissions</h2>
+<p>The Android app requests internet, microphone and camera access. Sonix starts media capture when you choose a call control and grant permission. Uploaded files are the files you choose in the file picker. Sonix has no code to read your contacts, location, or photo library in the background. Call audio, video and screens are sent between participants through WebRTC. Sonix does not record calls. The host forwards call signaling while you are connected.</p>
+<h2>Other services</h2>
+<p>The SonixApp preview is hosted at sonixapp-community.urbanclover.chatgpt.site. The landing and download pages use GitHub Pages. These providers receive network information, including IP addresses, to serve traffic. Google STUN helps establish voice connections. Direct connections can reveal a participant's network address to other call participants. Discord template and currency lookups happen when you use those features. Optional AI command generation sends the bot name and description you submit to the model configured on the server.</p>
+<h2>Cookies and local settings</h2>
+<p>Sonix uses a session cookie for sign-in, valid for up to one year and renewed while you use the app. Session tokens and passwords are stored as hashes. Browser storage keeps open tabs and call-sound preferences. Sonix includes no analytics or advertising scripts. Fonts load from its own host. Routine access logging is disabled on this server; hosting providers may keep their own logs.</p>
+<h2>Your controls</h2>
+<p>Open Settings → Privacy to download your account data, clear local preferences or delete your account. Deletion requires your password and removes your profile, messages, votes, friendships and sessions from the active database. Polls created after the privacy update are also removed. Historical polls created before this update did not record their creator. Transfer shared server ownership before deleting an owner account. Settings → Account security lets you change your password and sign out other sessions.</p>
+<p>Copies saved by other people or providers may remain after deletion. Removing an account does not erase another person's messages or a shared server's content.</p>
+</main></body></html>

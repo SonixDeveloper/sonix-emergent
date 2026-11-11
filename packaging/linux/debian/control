@@ -1,0 +1,9 @@
+Package: sonix-chat
+Version: 0.1.5
+Section: net
+Priority: optional
+Architecture: amd64
+Depends: gjs, gir1.2-gtk-3.0, gir1.2-webkit2-4.1
+Maintainer: Sonix Developers <sonixdeveloper@users.noreply.github.com>
+Description: Sonix community chat desktop app
+ Sonix runs in its own native Linux window using GTK and WebKitGTK.

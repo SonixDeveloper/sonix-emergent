@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Sonix
+Comment=Community chat and voice
+Exec=sonix
+Icon=io.github.SonixDeveloper.Sonix
+Categories=Network;Chat;
+Terminal=false
+StartupNotify=true

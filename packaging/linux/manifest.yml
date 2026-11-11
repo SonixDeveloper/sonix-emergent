@@ -1,0 +1,25 @@
+app-id: io.github.SonixDeveloper.Sonix
+runtime: org.gnome.Platform
+runtime-version: '50'
+sdk: org.gnome.Platform
+command: sonix
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=xdg-data/sonix:create
+  - --filesystem=xdg-cache/sonix:create
+  - --talk-name=org.freedesktop.portal.Desktop
+modules:
+  - name: sonix
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 packaging/linux/sonix /app/bin/sonix
+      - install -Dm644 packaging/linux/io.github.SonixDeveloper.Sonix.desktop /app/share/applications/io.github.SonixDeveloper.Sonix.desktop
+      - install -Dm644 packaging/downloads/assets/sonix.svg /app/share/icons/hicolor/scalable/apps/io.github.SonixDeveloper.Sonix.svg
+    sources:
+      - type: dir
+        path: ../..

@@ -1,0 +1,59 @@
+[project]
+name = "sonix"
+version = "0.1.0"
+description = "Modern, extensible chat app – Sonix"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.3",
+    "sqlmodel>=0.0.21",
+    "aiohttp>=3.9",
+    "websockets>=12.0",
+    "textual>=0.52",
+    "rich>=13.7",
+    "python-dotenv>=1.0",
+    "cryptography>=42.0",
+    "pyyaml>=6.0",
+    "pluggy>=1.5",
+    "pynacl>=1.5",
+    "pyotp>=2.9,<3",
+    "qrcode>=8,<9",
+    "Pillow>=11,<13",
+]
+
+[project.scripts]
+sonix = "sonix.presentation.commands:app"
+sonix-server = "sonix.infrastructure.network.server:main"
+sonix-tui = "sonix.main:main"
+[dependency-groups]
+dev = [
+    "pytest==8.2.*",
+    "pytest-asyncio==0.23.*",
+    "ruff==0.5.*",
+    "mypy==1.10.*",
+    "pre-commit==3.7.*",
+    "watchfiles==0.21.*",
+]
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sonix*"]
+
+[tool.setuptools.package-data]
+"sonix.web" = ["assets/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+[tool.mypy]
+strict = true
+warn_unused_ignores = true
+python_version = "3.11"
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

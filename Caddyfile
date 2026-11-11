@@ -1,0 +1,4 @@
+{$SONIX_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy sonix-web:8080
+}

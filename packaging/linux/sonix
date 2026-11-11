@@ -1,0 +1,76 @@
+#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+imports.gi.versions.WebKit2 = '4.1';
+const {Gio, GLib, Gtk, WebKit2} = imports.gi;
+const launcher = 'https://sonixapp-community.urbanclover.chatgpt.site/';
+const previewPattern = /^https:\/\/sonixapp-community\.urbanclover\.chatgpt\.site(?=\/|$)/;
+const previewOrigin = 'https://sonixapp-community.urbanclover.chatgpt.site';
+
+const app = new Gtk.Application({application_id: 'io.github.SonixDeveloper.Sonix'});
+app.connect('activate', () => {
+    if (app.active_window) {
+        app.active_window.present();
+        return;
+    }
+    const window = new Gtk.ApplicationWindow({application: app, title: 'Sonix', default_width: 1160, default_height: 760});
+    const profileDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'sonix']);
+    const cacheDir = GLib.build_filenamev([GLib.get_user_cache_dir(), 'sonix', 'web']);
+    GLib.mkdir_with_parents(GLib.build_filenamev([profileDir, 'web']), 0o700);
+    GLib.mkdir_with_parents(cacheDir, 0o700);
+    const data = new WebKit2.WebsiteDataManager({
+        base_data_directory: GLib.build_filenamev([profileDir, 'web']),
+        base_cache_directory: cacheDir,
+    });
+    const context = WebKit2.WebContext.new_with_website_data_manager(data);
+    context.get_cookie_manager().set_persistent_storage(
+        GLib.build_filenamev([profileDir, 'cookies.sqlite']),
+        WebKit2.CookiePersistentStorage.SQLITE
+    );
+    const web = WebKit2.WebView.new_with_context(context);
+    web.get_settings().set_enable_media_stream(true);
+    web.connect('decide-policy', (_view, decision, kind) => {
+        if (kind !== WebKit2.PolicyDecisionType.NAVIGATION_ACTION &&
+            kind !== WebKit2.PolicyDecisionType.NEW_WINDOW_ACTION) return false;
+        const url = decision.get_navigation_action().get_request().get_uri();
+        if (kind === WebKit2.PolicyDecisionType.NAVIGATION_ACTION) {
+            if (url === 'about:blank') return false;
+            const origin = url.match(previewPattern)?.[0];
+            if (origin && origin === previewOrigin) {
+                return false;
+            }
+        }
+        decision.ignore();
+        if (/^https?:\/\//.test(url)) {
+            try { Gio.AppInfo.launch_default_for_uri(url, null); } catch (error) { logError(error); }
+        }
+        return true;
+    });
+    web.connect('load-failed', (_view, _event, _url, _error) => {
+        const errorPage = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sonix connection problem</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#100d12;color:#f4eff3;font:16px system-ui,sans-serif}.card{max-width:440px;padding:32px;text-align:center}p{color:#aaa3b0;line-height:1.5}button{padding:12px 22px;border:0;border-radius:9px;background:#ff405d;color:#170b10;font-weight:700;cursor:pointer}</style><main class="card"><h1>Sonix could not connect</h1><p>Check your internet connection, then try again.</p><button onclick="location.reload()">Retry</button></main>`;
+        web.load_html(errorPage, previewOrigin + '/');
+        return true;
+    });
+    web.connect('permission-request', (_view, request) => {
+        if (!(request instanceof WebKit2.UserMediaPermissionRequest) || !previewOrigin ||
+            !web.get_uri()?.startsWith(previewOrigin + '/')) {
+            request.deny();
+            return true;
+        }
+        const dialog = new Gtk.MessageDialog({
+            transient_for: window, modal: true, message_type: Gtk.MessageType.QUESTION,
+            buttons: Gtk.ButtonsType.YES_NO, text: 'Allow Sonix to use the requested media devices?',
+        });
+        dialog.connect('response', (_dialog, response) => {
+            if (response === Gtk.ResponseType.YES) request.allow();
+            else request.deny();
+            dialog.destroy();
+        });
+        dialog.show();
+        return true;
+    });
+    window.add(web);
+    window.show_all();
+    web.load_uri(launcher);
+});
+app.run(ARGV);

@@ -1,0 +1,16 @@
+:root{color-scheme:dark;--bg:#100d12;--panel:#1a151d;--line:#342633;--text:#f9f2f5;--muted:#c1afb9;--accent:#ff5264;font:16px Inter,system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text)}a{color:inherit;text-decoration:none}a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}p{color:var(--muted);line-height:1.6}h2{font-size:clamp(26px,3.5vw,38px);margin:0 0 18px;letter-spacing:-.04em}
+.site-header,.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;width:min(1180px,100% - 40px);margin:auto;padding:15px 0}
+.site-header nav{display:flex;align-items:center;gap:20px;font-size:14px}.nav-start{padding:9px 13px;border:1px solid var(--line);border-radius:7px}.nav-start:hover{border-color:var(--accent)}
+.wordmark{display:inline-flex;align-items:center;gap:6px;font:italic 800 29px "Barlow Condensed",Impact,sans-serif;letter-spacing:1px}.wordmark img{width:34px;height:34px}.wordmark span{color:var(--accent);margin-left:-6px}
+main{width:min(1180px,100% - 40px);margin:auto}.hero{min-height:clamp(400px,55vw,525px);display:flex;align-items:center;border:1px solid #58242e;border-radius:18px;overflow:hidden;background:linear-gradient(90deg,#160d14 6%,#160d14e8 28%,#160d1455 70%,transparent),url("assets/overdrive.webp") 72% center/cover}
+.hero-copy{padding:clamp(25px,5vw,64px);max-width:730px}.eyebrow{text-transform:uppercase;letter-spacing:2px;font-weight:700;font-size:11px;color:#ff98a4;display:flex;align-items:center;gap:8px}.eyebrow span{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+h1{font:italic 800 clamp(55px,8vw,104px)/.86 "Barlow Condensed",Impact,sans-serif;text-transform:uppercase;letter-spacing:-.03em;margin:14px 0 20px;max-width:600px}.hero-copy>p:not(.eyebrow){max-width:410px}.cta{display:inline-flex;gap:17px;align-items:center;padding:13px 16px;background:var(--accent);color:#1a0910;font-weight:700;border-radius:8px;margin-top:9px}
+.features,.setup{margin:42px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.grid article,.setup{border:1px solid var(--line);border-radius:11px;background:var(--panel);padding:20px}.grid h3{margin:0 0 6px;font-size:16px}.grid p{font-size:14px;margin:0}
+.setup{display:grid;grid-template-columns:1fr 1fr;gap:23px;padding:clamp(17px,3vw,34px);align-items:center}.setup p{margin:0;font-size:14px}pre{margin:0 0 8px;background:#110d13;border:1px solid var(--line);padding:14px;border-radius:8px;overflow:auto;color:#f8c4cb}
+.site-footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:630px){main,.site-header,.site-footer{width:calc(100% - 24px)}.hero{background-position:64% center}.grid,.setup{grid-template-columns:1fr}.site-header nav{gap:9px;font-size:12px}.features,.setup{margin:27px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.availability{justify-self:end}
+@media(max-width:630px){.availability{justify-self:start}}
