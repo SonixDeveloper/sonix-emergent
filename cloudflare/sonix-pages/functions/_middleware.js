@@ -1,4 +1,7 @@
-const PAGE_ORIGIN = "https://sonixdeveloper.github.io";
+const PAGE_ORIGINS = new Set([
+  "https://sonixdeveloper.github.io",
+  "https://sonixapp-community.sonix-proxy.workers.dev",
+]);
 const SESSION_AGE = 60 * 60 * 24 * 30;
 const PUBLIC = {
   overdrive: {
@@ -374,7 +377,7 @@ export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith("/api/")) return next();
   const origin = request.headers.get("Origin");
-  if (origin !== PAGE_ORIGIN) return new Response("Origin not allowed", { status: 403 });
+  if (!PAGE_ORIGINS.has(origin)) return new Response("Origin not allowed", { status: 403 });
   const cors = {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Credentials": "true",
